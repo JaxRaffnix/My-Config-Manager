@@ -1,0 +1,17 @@
+<Configuration>
+  <Add OfficeClientEdition="64" Channel="Current">
+    <Product ID="O365ProPlusRetail">
+      <Language ID="MatchOS" />
+      <Language ID="en-us" />
+      <ExcludeApp ID="Access" />
+      <ExcludeApp ID="Outlook" />
+      <ExcludeApp ID="OutlookForWindows" />
+      <ExcludeApp ID="Publisher" />
+      <ExcludeApp ID="OneDrive" />
+    </Product>
+  </Add>
+
+  <Display Level="Full" AcceptEULA="TRUE" />
+  <Property Name="PinIconsToTaskbar" Value="FALSE" />
+  <Updates Enabled="TRUE" Channel="Current" />
+</Configuration>

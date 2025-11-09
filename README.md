@@ -19,3 +19,15 @@ Set-ItemProperty -Path "HKLM:\Software\Microsoft\PowerShell\1\ShellIds\Microsoft
 
 
 zu path hinzufügen: `"C:\Program Files\Inkscape\bin"`
+
+- oh my posh installer script
+
+issue:
+- `Set-GitConfiguration` aborts if user name and email already match. The other settings are ignored.
+
+
+manual steps:
+- **Visual Studio Code:** Settings and extensions are managed via your GitHub account.
+- **KeepassXC:** Enable browser integration for Google Chrome in the settings. Enable lock after x seconds. Set Auto Type Shortcut to `CTRL+ALT+A`.
+- **MikTeX:** Check for upgrades.
+- **Thunderbird:** Include Adress Book and Calender from `jan.hoegen.akathebozz@gmail.com`
