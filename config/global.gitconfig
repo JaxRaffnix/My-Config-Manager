@@ -1,0 +1,18 @@
+[user]
+    name = Alice
+    email = alice@example.com
+
+[init]
+    defaultBranch = main
+
+[credential]
+    helper = manager
+
+[color]
+    ui = auto
+
+[core]
+    autocrlf = true
+
+[pull]
+    rebase = false

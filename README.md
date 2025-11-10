@@ -1,4 +1,4 @@
-# My-Backup-Apply
+# My-System-Config
 
 - add terminal json to apply config
 - powertoys peek keybind?

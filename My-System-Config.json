@@ -5,6 +5,6 @@
   "ProjectUri": "https://github.com/JaxRaffnix/My-Backup-Apply",
   "FunctionsToExport": [""],
   "PowerShellVersion": "5.1",
-  "IgnoreFiles": [".git", ".gitignore", ".vscode", "My-Backup-Apply.json", "README.md", "LICENSE"],
+  "IgnoreFiles": [".git", ".gitignore", ".vscode", "My-System-Config.json", "README.md", "LICENSE"],
   "RequiredModules": ["My-System-Setup", "powershell-yaml"]
 }
