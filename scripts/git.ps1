@@ -8,7 +8,7 @@
 #>
 
 param(
-    [string]$ConfigFile = "$(Split-Path $PSScriptRoot)/../config/git/global.gitconfig"
+    [string]$ConfigFile = "$(Split-Path $PSScriptRoot)/../config/global.gitconfig"
 )
 
 # --- Check Git installation ---
@@ -16,7 +16,7 @@ Test-Dependency git git.git -App
 
 # --- Verify config file exists ---
 if (-not (Test-Path $ConfigFile)) {
-    Throw "❌ Git configuration file not found: $ConfigFile"
+    Throw "Git configuration file not found: $ConfigFile"
 }
 
 # --- Apply config file ---

@@ -14,6 +14,11 @@ Set-ItemProperty -Path "HKLM:\Software\Microsoft\PowerShell\1\ShellIds\Microsoft
   -Name "NoLogo" -Value 1 -Type DWord
 ```
 
+- if thunderbird includes emails: move thunderbird functionality to backup project.
+- If thunderbird should not include email backups: simplify backup data.
+- **SOLUTION: THUNDERBIRD SETTINGS IN MY SYSTEM CONFIG, EMAILS IN BACKUP PROJECT**
+
+- Pin Taskbar apps: `C:\Users\<User>\AppData\Roaming\Microsoft\Internet Explorer\Quick Launch\User Pinned\TaskBar`  
 
 `git config --global core.editor "code --wait"`
 
