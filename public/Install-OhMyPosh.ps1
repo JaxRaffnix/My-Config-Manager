@@ -33,7 +33,7 @@ function Install-OhMyPosh {
     [CmdletBinding()]
     param(
         [Parameter()]
-        [string]$FontName = "MesloLGS NF",
+        [string]$FontName = "meslo",
 
         [Parameter()]
         [string]$ProfilePath = $PROFILE,
@@ -66,21 +66,19 @@ function Install-OhMyPosh {
     }
 
     # --- 3. Optional: Configure PowerShell profile (disabled by default) ---
-    # The following logic is intentionally disabled since Windows Terminal JSON
-    # is already configured elsewhere in your project.
-    # Uncomment to automatically inject the initialization line:
-    #
-    # $initLine = 'oh-my-posh init pwsh | Invoke-Expression'
-    # if (-not (Test-Path $ProfilePath)) {
-    #     Write-Verbose "Creating new PowerShell profile at $ProfilePath..."
-    #     New-Item -Path $ProfilePath -ItemType File -Force | Out-Null
-    # }
-    # if (-not (Select-String -Path $ProfilePath -Pattern [regex]::Escape($initLine) -Quiet)) {
-    #     Add-Content -Path $ProfilePath -Value "`n$initLine"
-    #     Write-Host "✅ Added Oh-My-Posh init line to PowerShell profile." -ForegroundColor Green
-    # } else {
-    #     Write-Verbose "PowerShell profile already contains Oh-My-Posh init line."
-    # }
+    $initLine = 'oh-my-posh init pwsh | Invoke-Expression'
+    if (-not (Test-Path $ProfilePath)) {
+        Write-Verbose "Creating new PowerShell profile at $ProfilePath..."
+        New-Item -Path $ProfilePath -ItemType File -Force | Out-Null
+    }
+    if (-not (Select-String -Path $ProfilePath -Pattern [regex]::Escape($initLine) -Quiet)) {
+        Add-Content -Path $ProfilePath -Value "`n$initLine"
+        Write-Host "✅ Added Oh-My-Posh init line to PowerShell profile." -ForegroundColor Green
+    } else {
+        Write-Verbose "PowerShell profile already contains Oh-My-Posh init line."
+    }
 
     Write-Host "Oh-My-Posh setup complete." -ForegroundColor Cyan
 }
+
+# Install-OhMyPosh

@@ -44,3 +44,5 @@ function Set-TerminalConfig {
     Write-Host "Windows Terminal settings restored successfully!" -ForegroundColor Green
     # Write-Host "   $BackupFile → $settingsFile" -ForegroundColor DarkGray
 }
+
+# Set-TerminalConfig
