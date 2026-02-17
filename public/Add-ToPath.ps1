@@ -2,31 +2,70 @@ function Add-ToPath {
 
     [CmdletBinding()]
     param(
-        [Parameter(Mandatory = $false)]
         [ValidateNotNullOrEmpty()]
         [string]$ConfigFile = (Join-Path (Split-Path $PSScriptRoot -Parent) "config/user_path.txt")
     )
 
-    if (-not (Test-Path -Path $ConfigFile)) {
-        throw Write-Error "Config file not found: $ConfigFile"
+    if (-not (Test-Path $ConfigFile)) {
+        throw "Config file not found: $ConfigFile"
     }
 
-    if (-not (Get-Content -Path $ConfigFile | Where-Object { $_ -ne "" })) {
-        Throw "Config file is empty: $ConfigFile"
+    $NewPaths = Get-Content $ConfigFile |
+                Where-Object { $_.Trim() -ne "" } |
+                ForEach-Object { $_.Trim() }
+
+    if (-not $NewPaths) {
+        throw "Config file is empty: $ConfigFile"
     }
 
-    foreach ($line in Get-Content -Path $ConfigFile) {
-        if (-not [string]::IsNullOrWhiteSpace($line)) {
-            $currentPath = [Environment]::GetEnvironmentVariable("Path", [EnvironmentVariableTarget]::User)
-            if ($currentPath -notlike "*$line*") {
-                [Environment]::SetEnvironmentVariable("Path", "$currentPath;$line", [EnvironmentVariableTarget]::User)
-                Write-Host "Added '$line' to user PATH." -ForegroundColor Green
-            }
-            else {
-                Write-Verbose "'$line' is already in the user PATH."
-            }
+    # Get current user PATH (persistent)
+    $CurrentPath = [Environment]::GetEnvironmentVariable("Path", "User")
+    if (-not $CurrentPath) { $CurrentPath = "" }
+
+    # Normalize existing entries (case-insensitive set behavior)
+    $PathSet = [System.Collections.Generic.HashSet[string]]::new(
+        [StringComparer]::OrdinalIgnoreCase
+    )
+    foreach ($p in ($CurrentPath -split ';')) {
+        if ($p.Trim()) {
+            $normalized = (Resolve-Path -LiteralPath $p -ErrorAction SilentlyContinue)?.Path
+            $PathSet.Add(($normalized ?? $p).TrimEnd('\')) | Out-Null
         }
     }
 
-    Write-Host "Added Paths to User Space successfully!" -ForegroundColor Green
+    $Changed = $false
+    foreach ($line in $NewPaths) {
+
+        $resolved = [Environment]::ExpandEnvironmentVariables($line)
+
+        if (-not (Test-Path $resolved)) {
+            Write-Warning "Path does not exist: $resolved"
+            continue
+        }
+
+        $normalized = (Resolve-Path -LiteralPath $resolved).Path.TrimEnd('\')
+
+        if ($PathSet.Add($normalized)) {
+            Write-Verbose "Adding: $normalized"
+            $Changed = $true
+        }
+        else {
+            Write-Verbose "Already present: $normalized"
+        }
+    }
+
+    if (-not $Changed) {
+        Write-Verbose "No PATH changes required."
+        return
+    }
+
+    $UpdatedPath = ($PathSet.ToArray() -join ';')
+
+    if ($UpdatedPath -ne $CurrentPath) {
+        [Environment]::SetEnvironmentVariable("Path", $UpdatedPath, "User")
+        Write-Host "User PATH updated successfully. Restart terminal to apply changes." -ForegroundColor Green
+    }
+    else {
+        Write-Host "User PATH is already up to date." -ForegroundColor Yellow
+    }
 }
