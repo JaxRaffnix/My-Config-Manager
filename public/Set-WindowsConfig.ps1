@@ -60,28 +60,32 @@ This function requires administrative privileges with the 'gsudo' tool for certa
         [switch]$EnableLongPaths,
         [switch]$EnableDeveloperMode,
         [switch]$DisableEdgeTabsInAltTabView,
+        [switch]$DisableWindowsFeedback,
+        [switch]$DisableTelemetry,
+        [switch]$DisableMouseAcceleration,
+        [switch]$DisableExplorerGallery,
+        [switch]$DisablePowerShellLogo
     )
 
-    # Enable all options if -All is specified
+    # All feature switch names except -All and common parameters
+    $FeatureParameters = $PSCmdlet.MyInvocation.MyCommand.Parameters.Keys |
+                         Where-Object { $_ -ne 'All' -and $_ -notmatch '^(Verbose|Debug|ErrorAction|WarningAction|InformationAction|OutVariable|OutBuffer|PipelineVariable)$' }
+
+    # If -All is used, activate all feature switches dynamically
     if ($All) {
-        $EnableClipboardSync = $true
-        $HideSearchIcon = $true
-        $EnableSearchIndex = $true
-        $EnableDarkMode = $true
-        $EnableFullPathInExplorer = $true
-        $ShowHiddenFiles = $true
-        $ShowFileExtensions = $true
-        $EnableLongPaths = $true
-        $EnableDeveloperMode = $true
-        $DisableEdgeTabsInAltTabView = $true
+        foreach ($param in $FeatureParameters) {
+            Set-Variable -Name $param -Value $true
+        }
     }
 
-    # Validate if at least one option is selected
-    if (-not ($EnableClipboardSync -or $HideSearchIcon -or $EnableSearchIndex -or $EnableDarkMode -or $EnableFullPathInExplorer -or $ShowHiddenFiles -or $ShowFileExtensions -or $EnableLongPaths -or $EnableDeveloperMode)) {
-        Throw "No configuration options were selected. Use -All or specify individual switches."
+    # Determine which switches are enabled
+    $EnabledFeatures = $FeatureParameters |
+        Where-Object { (Get-Variable $_ -ValueOnly -ErrorAction SilentlyContinue) }
+    if (-not $EnabledFeatures) {
+        throw "No configuration options were selected. Use -All or specify individual switches."
     }
 
-    Test-Installation -App 'gsudo'
+    Test-Dependency -Command "gsudo" -Source "gerardog.gsudo" -App
 
     Write-Host "Starting Windows configuration setup..." -ForegroundColor Cyan
 
@@ -218,6 +222,40 @@ This function requires administrative privileges with the 'gsudo' tool for certa
             Write-Host "Telemetry disabled successfully."
         } catch {
             Write-Error "Failed to disable Telemetry: $_"
+        }
+    }
+
+    if ($DisableMouseAcceleration) {
+        try {
+            Set-ItemProperty -Path "HKCU:\Control Panel\Mouse" -Name "MouseSpeed" -Value 0 -Force
+            Set-ItemProperty -Path "HKCU:\Control Panel\Mouse" -Name "MouseThreshold" -Value 0 -Force
+            Set-ItemProperty -Path "HKCU:\Control Panel\Mouse" -Name "MouseThreshold1" -Value 0 -Force
+            Set-ItemProperty -Path "HKCU:\Control Panel\Mouse" -Name "MouseThreshold2" -Value 0 -Force
+             
+            Write-Host "Mouse Acceleration disabled successfully."
+        } catch {
+            Write-Error "Failed to disable Mouse Acceleration: $_"
+        }
+    }
+
+    if ($DisableExplorerGallery) {
+        try {
+            Write-Warning "Not yet implemented."
+            # TODO: this did not work.
+            
+            # Write-Host "Explorer Gallery disabled successfully." 
+        } catch {
+            Write-Error "Failed to disable Explorer Gallery: $_"
+        }
+    }
+
+    if ($DisablePowerShellLogo) {
+        try {
+            Set-ItemProperty -Path "HKCU:\Console" -Name "ShowPowerShellLogo" -Value 0 -Type DWord -Force
+
+            Write-Host "PowerShell logo disabled successfully."
+        } catch {
+            Write-Error "Failed to disable PowerShell logo: $_"
         }
     }
 

@@ -27,6 +27,8 @@ function Set-Wallpaper {
         [string]$LockScreenPath
     )
 
+    Test-Dependency -Command "gsudo" -Source "gerardog.gsudo" -App
+
     Add-Type -TypeDefinition @"
 using System;
 using System.Runtime.InteropServices;

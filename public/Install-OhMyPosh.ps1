@@ -33,21 +33,15 @@ function Install-OhMyPosh {
     [CmdletBinding()]
     param(
         [Parameter()]
-        [string]$FontName = "meslo",
+        [string]$FontName = "meslo"
 
-        [Parameter()]
-        [string]$ProfilePath = $PROFILE,
-
-        [Parameter()]
-        [string]$WindowsTerminalSettings = "$env:LOCALAPPDATA\Packages\Microsoft.WindowsTerminal_8wekyb3d8bbwe\LocalState\settings.json"
     )
 
-    Write-Host "🔧 Setting up Oh-My-Posh environment..." -ForegroundColor Cyan
+    Write-Host "Setting up Oh-My-Posh environment..." -ForegroundColor Cyan
 
-    # --- 1. Ensure Oh-My-Posh is installed ---
     Test-Dependency -Command "oh-my-posh" -App -Source "JanDeDobbeleer.OhMyPosh"
 
-    # --- 2. Install Meslo font if not present ---
+    # TODO: i dont think this validation works.
     $fontInstalled = Get-CimInstance -ClassName Win32_FontInfoAction -ErrorAction SilentlyContinue |
         Where-Object { $_.Caption -like "*$FontName*" }
 
@@ -64,21 +58,6 @@ function Install-OhMyPosh {
     else {
         Write-Verbose "Font '$FontName' already installed."
     }
-
-    # --- 3. Optional: Configure PowerShell profile (disabled by default) ---
-    $initLine = 'oh-my-posh init pwsh | Invoke-Expression'
-    if (-not (Test-Path $ProfilePath)) {
-        Write-Verbose "Creating new PowerShell profile at $ProfilePath..."
-        New-Item -Path $ProfilePath -ItemType File -Force | Out-Null
-    }
-    if (-not (Select-String -Path $ProfilePath -Pattern [regex]::Escape($initLine) -Quiet)) {
-        Add-Content -Path $ProfilePath -Value "`n$initLine"
-        Write-Host "✅ Added Oh-My-Posh init line to PowerShell profile." -ForegroundColor Green
-    } else {
-        Write-Verbose "PowerShell profile already contains Oh-My-Posh init line."
-    }
-
-    Write-Host "Oh-My-Posh setup complete." -ForegroundColor Cyan
 }
 
 # Install-OhMyPosh
