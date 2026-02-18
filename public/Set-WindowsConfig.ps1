@@ -89,6 +89,8 @@ This function requires administrative privileges with the 'gsudo' tool for certa
 
     Write-Host "Starting Windows configuration setup..." -ForegroundColor Cyan
 
+    gsudo cache on | Out-Null
+
     # Enable clipboard history and sync
     if ($EnableClipboardSync) {
         try {
@@ -115,6 +117,7 @@ This function requires administrative privileges with the 'gsudo' tool for certa
     # Enable Windows Search Indexing
     if ($EnableSearchIndex) {
         try {
+            #  ! Error: cannot open wseach service on computer '.'
             Start-Service -Name "WSearch" -ErrorAction Stop
             gsudo Set-Service -Name "WSearch" -StartupType Automatic -ErrorAction Stop
             
@@ -183,8 +186,8 @@ This function requires administrative privileges with the 'gsudo' tool for certa
     # Enable Developer Mode
     if ($EnableDeveloperMode) {
         try {
-            Set-ItemProperty -Path "HKLM:\SOFTWARE\Microsoft\Windows\CurrentVersion\AppModelUnlock" -Name "AllowDevelopmentWithoutDevLicense" -Value 1 -Force
-            Set-ItemProperty -Path "HKLM:\SOFTWARE\Microsoft\Windows\CurrentVersion\AppModelUnlock" -Name "AllowAllTrustedApps" -Value 1 -Force
+            gsudo Set-ItemProperty -Path "HKLM:\SOFTWARE\Microsoft\Windows\CurrentVersion\AppModelUnlock" -Name "AllowDevelopmentWithoutDevLicense" -Value 1 -Force
+            gsudo Set-ItemProperty -Path "HKLM:\SOFTWARE\Microsoft\Windows\CurrentVersion\AppModelUnlock" -Name "AllowAllTrustedApps" -Value 1 -Force
             
             Write-Host "Developer Mode enabled successfully." 
         } catch {
@@ -196,7 +199,7 @@ This function requires administrative privileges with the 'gsudo' tool for certa
     if ($DisableEdgeTabsInAltTabView) {
         try {
             # Navigate to the registry key and set the property
-            Set-ItemProperty -Path "HKCU:\Software\Microsoft\Windows\CurrentVersion\Explorer\Advanced" -Name "MultiTaskingAltTabFilter" -Value 3
+            gsudo Set-ItemProperty -Path "HKCU:\Software\Microsoft\Windows\CurrentVersion\Explorer\Advanced" -Name "MultiTaskingAltTabFilter" -Value 3
 
             Write-Host "Edge tabs in Alt+Tab view disabled successfully."
         } catch {
@@ -259,11 +262,7 @@ This function requires administrative privileges with the 'gsudo' tool for certa
         }
     }
 
-    # Restart Windows Explorer to apply changes
-    Write-Warning "Restarting Windows Explorer to apply changes..."
-    Stop-Process -Name explorer -Force
-    Start-Process explorer
-
+    Restart-Explorer -Force
     Write-Host "Windows configuration setup completed." -ForegroundColor Green
 }
 
