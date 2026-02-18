@@ -70,14 +70,12 @@ This function requires administrative privileges with the 'gsudo' tool for certa
     # All feature switch names except -All and common parameters
     $FeatureParameters = $PSCmdlet.MyInvocation.MyCommand.Parameters.Keys |
                          Where-Object { $_ -ne 'All' -and $_ -notmatch '^(Verbose|Debug|ErrorAction|WarningAction|InformationAction|OutVariable|OutBuffer|PipelineVariable)$' }
-
     # If -All is used, activate all feature switches dynamically
     if ($All) {
         foreach ($param in $FeatureParameters) {
             Set-Variable -Name $param -Value $true
         }
     }
-
     # Determine which switches are enabled
     $EnabledFeatures = $FeatureParameters |
         Where-Object { (Get-Variable $_ -ValueOnly -ErrorAction SilentlyContinue) }
