@@ -11,7 +11,7 @@ function Set-PowerShellProfile {
         throw Write-Error "Config file not found: $ConfigFile"
     }
 
-    $DestinationFile = Join-Path $env:USERPROFILE "$env:USERPROFILE\Documents\PowerShell\Microsoft.PowerShell_profile.ps1"
+    $DestinationFile = Join-Path $env:USERPROFILE "\Documents\PowerShell\Microsoft.PowerShell_profile.ps1"
 
     $DestinationDir = Split-Path -Path $DestinationFile -Parent
     if (-not (Test-Path -Path $DestinationDir)) {

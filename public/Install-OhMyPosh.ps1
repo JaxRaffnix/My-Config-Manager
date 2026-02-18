@@ -37,8 +37,6 @@ function Install-OhMyPosh {
 
     )
 
-    Write-Host "Setting up Oh-My-Posh environment..." -ForegroundColor Cyan
-
     Test-Dependency -Command "oh-my-posh" -App -Source "JanDeDobbeleer.OhMyPosh"
 
     # TODO: i dont think this validation works.
@@ -48,7 +46,7 @@ function Install-OhMyPosh {
     if (-not $fontInstalled) {
         Write-Host "📦 Installing Oh-My-Posh font '$FontName'..." -ForegroundColor Yellow
         try {
-            oh-my-posh font install $FontName | Out-Null
+            oh-my-posh font install $FontName
             Write-Host "✅ Font '$FontName' installed successfully." -ForegroundColor Green
         }
         catch {
@@ -58,6 +56,7 @@ function Install-OhMyPosh {
     else {
         Write-Verbose "Font '$FontName' already installed."
     }
+    Write-Host "Oh-My-Posh font installed successfully." -ForegroundColor Green
 }
 
 # Install-OhMyPosh
