@@ -1,4 +1,4 @@
-function Install-MicrosoftOffice {
+function Install-MSOffice365 {
     <#
     .SYNOPSIS
         Installs Microsoft 365 (Office 365) using a predefined XML configuration.
@@ -16,11 +16,11 @@ function Install-MicrosoftOffice {
         Directory where setup.exe (Office Deployment Tool) is or should be located.
 
     .EXAMPLE
-        Install-MicrosoftOffice
+        Install-MSOffice365
         Installs Office using the default config in your module’s config folder.
 
     .EXAMPLE
-        Install-MicrosoftOffice -ConfigFile "D:\Configs\office-custom.xml" -ODTPath "C:\ODT"
+        Install-MSOffice365 -ConfigFile "D:\Configs\office-custom.xml" -ODTPath "C:\ODT"
     #>
 
     [CmdletBinding(SupportsShouldProcess)]

@@ -1,4 +1,4 @@
-function Set-WindowsConfiguration {
+function Set-WindowsConfig {
 <#
 .SYNOPSIS
 Configures various Windows settings to enhance usability and functionality.
@@ -40,7 +40,7 @@ Activates Windows Developer Mode, allowing the installation of unsigned apps and
 Disables the display of Microsoft Edge tabs in the Alt+Tab view.
 
 .EXAMPLE
-Set-WindowsConfiguration -All
+Set-WindowsConfig -All
 Configures all available settings.
 
 .NOTES
